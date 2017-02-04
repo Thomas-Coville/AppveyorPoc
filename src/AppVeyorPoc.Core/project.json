@@ -4,7 +4,6 @@
     "debugType": "portable"
   },
   "dependencies": {
-    "AppVeyorPoc.Core": "1.0.0-*",
     "NETStandard.Library": "1.*"
   },
   "frameworks": {
