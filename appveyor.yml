@@ -1,4 +1,6 @@
-version: 1.0.{build}
+version: 0.0.{build}
+nuget:
+  account_feed: true
 configuration: Release
 before_build:
 - ps: >-
@@ -6,13 +8,21 @@ before_build:
 
     dotnet restore
 build:
+  publish_nuget: true
+  publish_nuget_symbols: true
+  include_nuget_references: true
   verbosity: minimal
+after_build:
+- ps: >- 
+    dotnet pack src\AppVeyorPoc.Library -o .\Artifacts
+    dotnet pack src\AppVeyorPoc.Core -o .\Artifacts
 test_script:
 - cmd: dotnet test .\tests\AppVeyorPoc.UnirTests\
-
 cache:
   - packages -> **\packages.config      # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
   - projectA\libs
   - node_modules                        # local npm modules
   - '%APPDATA%\npm-cache'               # npm cache
   - '%USERPROFILE%\.nuget\packages -> **\project.json'  # project.json cache
+artifacts:
+- path: .\Artifacts\*
