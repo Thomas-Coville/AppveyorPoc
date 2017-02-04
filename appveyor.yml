@@ -3,6 +3,7 @@ configuration: Release
 before_build:
 - ps: >-
     dotnet --info # logs the version of the dotnet client
+    
     dotnet restore
 build:
   verbosity: minimal
