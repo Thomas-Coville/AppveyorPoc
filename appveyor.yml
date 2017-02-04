@@ -3,12 +3,12 @@ configuration: Release
 before_build:
 - ps: >-
     dotnet --info # logs the version of the dotnet client
-    
+
     dotnet restore
 build:
   verbosity: minimal
 test_script:
-- cmd: dotnet test .tests\AppVeyorPoc.UnirTests\
+- cmd: dotnet test .\tests\AppVeyorPoc.UnirTests\
 
 cache:
   - packages -> **\packages.config      # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
