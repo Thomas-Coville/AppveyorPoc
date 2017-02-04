@@ -4,6 +4,8 @@ nuget:
 configuration: Release
 before_build:
 - ps: >-
+    ./build.ps1
+
     dotnet --info # logs the version of the dotnet client
 
     dotnet restore
@@ -15,7 +17,7 @@ build:
 after_build:
 - ps: >- 
     dotnet pack src\AppVeyorPoc.Library -o .\Artifacts
-    
+
     dotnet pack src\AppVeyorPoc.Core -o .\Artifacts
 test_script:
 - cmd: dotnet test .\tests\AppVeyorPoc.UnirTests\
