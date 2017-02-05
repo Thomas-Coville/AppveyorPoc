@@ -9,10 +9,10 @@
     "dotnet-test-xunit": "1.0.0-rc2-build10015",
     "Microsoft.NETCore.App": "1.1.0",
     "Newtonsoft.Json": "9.*",
-    "AppVeyorPoc.Cli": "0.1.0-alpha-test-branc0001",
-    "AppVeyorPoc.Core": "0.1.0-alpha-test-branc0001",
-    "AppVeyorPoc.Library": "0.1.0-alpha-test-branc0001",
-    "AppVeyorPoc.WebApp": "0.1.0-alpha-test-branc0001",
+    "AppVeyorPoc.Cli": "1.0.0-*",
+    "AppVeyorPoc.Core": "1.0.0-*",
+    "AppVeyorPoc.Library": "1.0.0-*",
+    "AppVeyorPoc.WebApp": "1.0.0-*"
   },
 
   "testRunner": "xunit",
