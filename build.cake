@@ -123,14 +123,14 @@ Task("Test")
             };
 
             OpenCover(tool => tool.DotNetCoreTest("./tests/AppVeyorPoc.Tests/project.json",settings),
-                new FilePath("./coverage.xml"),
+                new FilePath("./artifacts/coverage.xml"),
                 new OpenCoverSettings()
                 {
                     OldStyle = true
                 }
                 .WithFilter("+[*]*")
                 .WithFilter("-[xunit*]*")
-            );
+            );           
     });
 
 
