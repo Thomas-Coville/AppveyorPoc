@@ -37,7 +37,7 @@ artifacts:
 
 deploy:
   release: v$(GitVersion_MajorMinorPatch)
-  description: '$(LATEST_RELEASE_NOTES)'
+  description: $(LATEST_RELEASE_NOTES)
   provider: GitHub
   auth_token:
     secure: 3kZytiMqUPTXYbjoLn+RGzzIGhsf/PiEM2nUNomMPvtiTcvpFVZL4/dFSqh2ADSz  # your encrypted token from GitHub
