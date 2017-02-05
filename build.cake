@@ -112,7 +112,7 @@ Task("Package")
     });
 
 Task("Test")
-    // .IsDependentOn("Package")
+    .IsDependentOn("Package")
     .Does(() => {
             OpenCover(tool => tool.DotNetCoreTest("./tests/AppVeyorPoc.Tests/project.json"),
                 new FilePath("./coverage.xml"),
@@ -133,10 +133,16 @@ Task("Test")
                 //     RepoToken = token
                 // });
 
-                CoverallsIo("coverage.xml", new CoverallsIoSettings()
+                try
                 {
-                    RepoToken = token
-                });
+                    CoverallsIo("coverage.xml", new CoverallsIoSettings()
+                    {
+                        RepoToken = token
+                    });
+                }catch(Exception e)
+                {
+                    Information("Error: " + e.StackTrace.ToString());
+                }
             }else
             {
                 Information("No coveralls token. Skipping coveralls.io publication...");
