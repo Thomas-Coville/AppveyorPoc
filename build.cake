@@ -74,8 +74,12 @@ GitVersion versionInfo = null;
 Task("Version")
     .Does(() => {
     
-        versionInfo = GitVersion(new GitVersionSettings{
+        GitVersion(new GitVersionSettings{
             OutputType = GitVersionOutput.BuildServer,              
+        });
+
+        versionInfo = GitVersion(new GitVersionSettings{
+            OutputType = GitVersionOutput.Json,              
             LogFilePath = "./artifacts/git-version.log"
         });
        
