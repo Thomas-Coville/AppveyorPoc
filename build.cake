@@ -127,9 +127,9 @@ Task("Test")
                 new FilePath("./artifacts/coverage.xml"),
                 new OpenCoverSettings()
                 {
-                    OldStyle = true
-                    Register = "user",
-
+                    OldStyle = true,
+                    Register = "user"
+                    
                 }
                 .WithFilter("+[*]*")
                 .WithFilter("-[xunit*]*")
