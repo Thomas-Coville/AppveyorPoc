@@ -73,13 +73,9 @@ Task("Restore")
 GitVersion versionInfo = null;
 Task("Version")
     .Does(() => {
-        GitVersion(new GitVersionSettings{
-            UpdateAssemblyInfo = true,
-            OutputType = GitVersionOutput.BuildServer,
-        });
-
+    
         versionInfo = GitVersion(new GitVersionSettings{
-            OutputType = GitVersionOutput.Json,              
+            OutputType = GitVersionOutput.BuildServer,              
             LogFilePath = "./artifacts/git-version.log"
         });
        
