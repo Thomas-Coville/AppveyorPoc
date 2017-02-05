@@ -1,7 +1,6 @@
-#tool "nuget:?package=OpenCover"
 #tool "nuget:?package=GitReleaseNotes"
 #tool "nuget:?package=GitVersion.CommandLine"
-#tool "nuget:?package=gitlink"
+// #tool "nuget:?package=gitlink"
 
 
 Setup((context) =>
@@ -100,7 +99,7 @@ Task("Build")
 Task("Package")
     .IsDependentOn("Build")
     .Does(() => {
-        GitLink("./", new GitLinkSettings { ArgumentCustomization = args => args.Append("-include Specify,Specify.Autofac") });
+        // GitLink("./", new GitLinkSettings { ArgumentCustomization = args => args.Append("-include Specify,Specify.Autofac") });
 
         GenerateReleaseNotes();
 
@@ -108,16 +107,27 @@ Task("Package")
         PackageProject("AppVeyorPoc.Library", "./src/AppVeyorPoc.Library/project.json");
     });
 
-
 Task("Test")
-    .IsDependentOn("Build")
     .IsDependentOn("Package")
-    .Does(()=>
-    {
-        OpenCover(tool => tool.DotNetCoreTest("./tests/AppVeyorPoc.UnirTests/"),
-            new FilePath("./result.xml"),
-            new OpenCoverSettings());     
+    .Does(() => {
+            OpenCover(tool => tool.DotNetCoreTest("./tests/AppVeyorPoc.Tests/project.json"),
+                new FilePath("./coverage.xml"),
+                new OpenCoverSettings()
+                {
+                    OldStyle = true
+                }
+                .WithFilter("+[*]*")
+                .WithFilter("-[xunit*]*")
+            );
+
+            if(BuildSystem.IsRunningOnAppVeyor)
+            {
+                var token = EnvironmentVariable("COVERALLS_REPO_TOKEN");
+
+                Information("token: " + token);
+            }
     });
+
 
 private void PackageProject(string projectName, string projectJsonPath)
 {
