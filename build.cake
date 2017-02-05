@@ -135,13 +135,19 @@ Task("Test")
             var token = EnvironmentVariable("COVERALLS_REPO_TOKEN");
             if(token != null)
             {
-                Information("Pushing to coveralls.io");
+                Information("Pushing to coveralls.io");              
 
                 try
                 {
                     CoverallsNet("coverage.xml", CoverallsNetReportType.OpenCover, new CoverallsNetSettings()
                     {
-                        RepoToken = token
+                        RepoTokenVariable = "COVERALLS_REPO_TOKEN",
+                        TreatUploadErrorsAsWarnings = true,
+                        CommitEmail = EnvironmentVariable("COVERALLS_REPO_TOKEN"),
+                        CommitAuthor = EnvironmentVariable("APPVEYOR_REPO_COMMIT_AUTHOR"),
+                        CommitBranch = EnvironmentVariable("APPVEYOR_REPO_BRANCH"),                        
+                        CommitMessage = EnvironmentVariable("APPVEYOR_REPO_COMMIT_MESSAGE"),
+
                     });
                     // CoverallsIo("coverage.xml", new CoverallsIoSettings()
                     // {
