@@ -28,7 +28,7 @@ Task("Version")
         });
 
         versionInfo = GitVersion(new GitVersionSettings{
-            OutputType = GitVersionOutput.Json              
+            OutputType = GitVersionOutput.Json,              
             LogFilePath = "./artifacts/git-version.log"
         });
        
