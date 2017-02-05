@@ -133,7 +133,13 @@ Task("Test")
                 }
                 .WithFilter("+[*]*")
                 .WithFilter("-[xunit*]*")
-            );           
+            );         
+			
+			CoverallsIo("./artifacts/coverage.xml", new CoverallsIoSettings()
+            {
+                RepoToken = EnvironmentVariable("COVERALLS_REPO_TOKEN"),
+				FullSources = true
+            });  
     });
 
 
