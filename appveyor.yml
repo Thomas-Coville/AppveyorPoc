@@ -13,7 +13,7 @@ build:
   verbosity: minimal
 
 build_script:
-- ps: build.ps1
+- ps: .\build.ps1
 
 test_script:
 - cmd: dotnet test .\tests\AppVeyorPoc.UnirTests\
