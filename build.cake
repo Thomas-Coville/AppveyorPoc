@@ -109,7 +109,7 @@ Task("Package")
     .Does(() => {
         // GitLink("./", new GitLinkSettings { ArgumentCustomization = args => args.Append("-include Specify,Specify.Autofac") });
 
-        GenerateReleaseNotes();
+        // GenerateReleaseNotes();
 
         PackageProject("AppVeyorPoc.Core", "./src/AppVeyorPoc.Core/project.json");
         PackageProject("AppVeyorPoc.Library", "./src/AppVeyorPoc.Library/project.json");
@@ -165,6 +165,7 @@ private void GenerateReleaseNotes()
         var releaseNotesExitCode = StartProcess(
         @"tools\GitReleaseNotes\tools\gitreleasenotes.exe", 
         new ProcessSettings { Arguments = ". /o artifacts/releasenotes.md" });
+
     if (string.IsNullOrEmpty(System.IO.File.ReadAllText("./artifacts/releasenotes.md")))
         System.IO.File.WriteAllText("./artifacts/releasenotes.md", "No issues closed since last release");
 
