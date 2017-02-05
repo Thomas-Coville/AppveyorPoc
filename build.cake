@@ -105,6 +105,7 @@ Task("Build")
     });
 
 Task("ReleaseNotes")
+    .IsDependentOn("Version")
     .Does(() => {
         //     var releaseNotesExitCode = StartProcess(
         // @"tools\GitReleaseNotes\tools\gitreleasenotes.exe", 
@@ -119,7 +120,6 @@ Task("ReleaseNotes")
             WorkingDirectory         = ".",
             Verbose                  = true,
             // IssueTracker             = GitReleaseNotesIssueTracker.GitHub,
-            AllTags                  = true,
             // RepoUserName             = "bob",
             // RepoPassword             = "password",
             // RepoUrl                  = "http://myrepo.co.uk",
@@ -129,8 +129,7 @@ Task("ReleaseNotes")
             // IssueTrackerPassword     = "password",
             // IssueTrackerProjectId    = "1234",
             // Categories               = "Category1",
-            // Version                  = "1.2.3.4",
-            AllLabels                = true
+            Version                  = versionInfo.MajorMinorPatch,
         });
 
         var notes = System.IO.File.ReadAllText("./artifacts/releasenotes.md");
