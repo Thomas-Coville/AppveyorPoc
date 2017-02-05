@@ -1,6 +1,8 @@
+#tool "nuget:?package=OpenCover"
 #tool "nuget:?package=GitReleaseNotes"
 #tool "nuget:?package=GitVersion.CommandLine"
 #tool "nuget:?package=gitlink"
+
 
 Setup((context) =>
 {
@@ -106,6 +108,17 @@ Task("Package")
         PackageProject("AppVeyorPoc.Library", "./src/AppVeyorPoc.Library/project.json");
     });
 
+
+Task("Test")
+    .IsDependentOn("Build")
+    .IsDependentOn("Package")
+    .Does(()=>
+    {
+        OpenCover(tool => tool.DotNetCoreTest("./tests/AppVeyorPoc.UnirTests/"),
+            new FilePath("./result.xml"),
+            new OpenCoverSettings());     
+    });
+
 private void PackageProject(string projectName, string projectJsonPath)
 {
     var settings = new DotNetCorePackSettings
@@ -144,6 +157,8 @@ private void PatchVersionProjectJson(string projectJsonPath)
 }
 
 Task("Default")
-    .IsDependentOn("Package");
+    .IsDependentOn("Package")
+    .IsDependentOn("Test")
+    ;
 
 RunTarget(target);
