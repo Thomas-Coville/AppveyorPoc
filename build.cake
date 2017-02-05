@@ -97,7 +97,10 @@ Task("Build")
     .IsDependentOn("Version")
     .IsDependentOn("Restore")
     .Does(() => {
-        MSBuild("./AppVeyorPoc.sln");
+        MSBuild("./AppVeyorPoc.sln",new MSBuildSettings {
+            Verbosity = Verbosity.Minimal,
+            Configuration = "Release",
+            });
     });
 
 Task("Package")
@@ -114,7 +117,12 @@ Task("Package")
 Task("Test")
     .IsDependentOn("Package")
     .Does(() => {
-            OpenCover(tool => tool.DotNetCoreTest("./tests/AppVeyorPoc.Tests/project.json"),
+            var settings = new DotNetCoreTestSettings
+            {
+                Configuration = "Release"
+            };
+
+            OpenCover(tool => tool.DotNetCoreTest("./tests/AppVeyorPoc.Tests/project.json",settings),
                 new FilePath("./coverage.xml"),
                 new OpenCoverSettings()
                 {
