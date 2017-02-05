@@ -104,13 +104,43 @@ Task("Build")
             });
     });
 
+Task("ReleaseNotes")
+    .Does(() => {
+        //     var releaseNotesExitCode = StartProcess(
+        // @"tools\GitReleaseNotes\tools\gitreleasenotes.exe", 
+        // new ProcessSettings { Arguments = ". /o artifacts/releasenotes.md" });
+
+        // if (string.IsNullOrEmpty(System.IO.File.ReadAllText("./artifacts/releasenotes.md")))
+        //     System.IO.File.WriteAllText("./artifacts/releasenotes.md", "No issues closed since last release");
+
+        // if (releaseNotesExitCode != 0) throw new Exception("Failed to generate release notes");
+
+        GitReleaseNotes("./artifacts/releasenotes.md", new GitReleaseNotesSettings {
+            WorkingDirectory         = ".",
+            Verbose                  = true,
+            // IssueTracker             = GitReleaseNotesIssueTracker.GitHub,
+            AllTags                  = true,
+            // RepoUserName             = "bob",
+            // RepoPassword             = "password",
+            // RepoUrl                  = "http://myrepo.co.uk",
+            RepoBranch               = "master",
+            // IssueTrackerUrl          = "http://myissuetracker.co.uk",
+            // IssueTrackerUserName     = "bob",
+            // IssueTrackerPassword     = "password",
+            // IssueTrackerProjectId    = "1234",
+            // Categories               = "Category1",
+            // Version                  = "1.2.3.4",
+            AllLabels                = true
+        });
+
+        var notes = System.IO.File.ReadAllText("./artifacts/releasenotes.md");
+        System.Environment.SetEnvironmentVariable("LATEST_RELEASE_NOTES", notes);
+    });
+
 Task("Package")
     .IsDependentOn("Build")
+    .IsDependentOn("ReleaseNotes")
     .Does(() => {
-        // GitLink("./", new GitLinkSettings { ArgumentCustomization = args => args.Append("-include Specify,Specify.Autofac") });
-
-        // GenerateReleaseNotes();
-
         PackageProject("AppVeyorPoc.Core", "./src/AppVeyorPoc.Core/project.json");
         PackageProject("AppVeyorPoc.Library", "./src/AppVeyorPoc.Library/project.json");
     });
@@ -159,18 +189,6 @@ private void PackageProject(string projectName, string projectJsonPath)
         "releaseNotes:releasenotes.md"
     });
 }    
-
-private void GenerateReleaseNotes()
-{
-        var releaseNotesExitCode = StartProcess(
-        @"tools\GitReleaseNotes\tools\gitreleasenotes.exe", 
-        new ProcessSettings { Arguments = ". /o artifacts/releasenotes.md" });
-
-    if (string.IsNullOrEmpty(System.IO.File.ReadAllText("./artifacts/releasenotes.md")))
-        System.IO.File.WriteAllText("./artifacts/releasenotes.md", "No issues closed since last release");
-
-    if (releaseNotesExitCode != 0) throw new Exception("Failed to generate release notes");
-}
 
 private void PatchVersionProjectJson(string projectJsonPath)
 {
