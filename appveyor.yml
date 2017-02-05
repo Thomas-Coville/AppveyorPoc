@@ -1,6 +1,9 @@
 version: 1.0.0-{build}
 
+skip_tags: true # do not build on tags
+
 configuration: Release
+
 before_build:
 - ps: >-
     dotnet --info # logs the version of the dotnet client
@@ -19,9 +22,6 @@ test: off # disable test execution are they are run from the cake script
 
 build_script:
 - ps: .\build.ps1
-
-# after_build:
-# - cmd: '.\tools\packages\coveralls.io\1.3.4\tools\coveralls.net.exe --opencover .\artifacts\coverage.xml'
 
 cache:
   - packages -> **\packages.config      # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
