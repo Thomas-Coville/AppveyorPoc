@@ -1,6 +1,7 @@
 #addin Cake.Coveralls
 
-#tool "nuget:?package=coveralls.io"
+#tool coveralls.net
+#tool coveralls.io
 #tool "nuget:?package=GitReleaseNotes"
 #tool "nuget:?package=GitVersion.CommandLine"
 // #tool "nuget:?package=gitlink"
@@ -111,7 +112,7 @@ Task("Package")
     });
 
 Task("Test")
-    .IsDependentOn("Package")
+    // .IsDependentOn("Package")
     .Does(() => {
             OpenCover(tool => tool.DotNetCoreTest("./tests/AppVeyorPoc.Tests/project.json"),
                 new FilePath("./coverage.xml"),
@@ -123,14 +124,22 @@ Task("Test")
                 .WithFilter("-[xunit*]*")
             );
 
-            if(BuildSystem.IsRunningOnAppVeyor)
+            var token = EnvironmentVariable("COVERALLS_REPO_TOKEN");
+            if(token != null)
             {
-                var token = EnvironmentVariable("COVERALLS_REPO_TOKEN");
+                Information("Pushing to coveralls.io");
+                // CoverallsNet("coverage.xml", CoverallsNetReportType.OpenCover, new CoverallsNetSettings()
+                // {
+                //     RepoToken = token
+                // });
 
-                CoverallsNet("coverage.xml", CoverallsNetReportType.OpenCover, new CoverallsNetSettings()
+                CoverallsIo("coverage.xml", new CoverallsIoSettings()
                 {
                     RepoToken = token
                 });
+            }else
+            {
+                Information("No coveralls token. Skipping coveralls.io publication...");
             }
     });
 
