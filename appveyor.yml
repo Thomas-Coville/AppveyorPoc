@@ -4,7 +4,6 @@ configuration: Release
 before_build:
 - ps: >-
     dotnet --info # logs the version of the dotnet client
-
 build:
   publish_nuget: true
   publish_nuget_symbols: true
