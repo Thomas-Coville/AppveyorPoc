@@ -136,17 +136,17 @@ Task("Test")
             if(token != null)
             {
                 Information("Pushing to coveralls.io");
-                // CoverallsNet("coverage.xml", CoverallsNetReportType.OpenCover, new CoverallsNetSettings()
-                // {
-                //     RepoToken = token
-                // });
 
                 try
                 {
-                    CoverallsIo("coverage.xml", new CoverallsIoSettings()
+                    CoverallsNet("coverage.xml", CoverallsNetReportType.OpenCover, new CoverallsNetSettings()
                     {
                         RepoToken = token
                     });
+                    // CoverallsIo("coverage.xml", new CoverallsIoSettings()
+                    // {
+                    //     RepoToken = token
+                    // });
                 }catch(Exception e)
                 {
                     Information("Error: " + e.StackTrace.ToString());
