@@ -127,12 +127,10 @@ Task("Test")
             {
                 var token = EnvironmentVariable("COVERALLS_REPO_TOKEN");
 
-                CoverallsIo("coverage.xml", new CoverallsIoSettings()
+                CoverallsNet("coverage.xml", CoverallsNetReportType.OpenCover, new CoverallsNetSettings()
                 {
-                    FullSources = true,
                     RepoToken = token
                 });
-
             }
     });
 
