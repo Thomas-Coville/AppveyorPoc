@@ -107,15 +107,7 @@ Task("Build")
 Task("ReleaseNotes")
     .IsDependentOn("Version")
     .Does(() => {
-        //     var releaseNotesExitCode = StartProcess(
-        // @"tools\GitReleaseNotes\tools\gitreleasenotes.exe", 
-        // new ProcessSettings { Arguments = ". /o artifacts/releasenotes.md" });
-
-        // if (string.IsNullOrEmpty(System.IO.File.ReadAllText("./artifacts/releasenotes.md")))
-        //     System.IO.File.WriteAllText("./artifacts/releasenotes.md", "No issues closed since last release");
-
-        // if (releaseNotesExitCode != 0) throw new Exception("Failed to generate release notes");
-
+        
         GitReleaseNotes("./artifacts/releasenotes.md", new GitReleaseNotesSettings {
             WorkingDirectory         = ".",
             Verbose                  = true,
@@ -132,8 +124,11 @@ Task("ReleaseNotes")
             Version                  = versionInfo.MajorMinorPatch,
         });
 
-        var notes = System.IO.File.ReadAllText("./artifacts/releasenotes.md");
-        System.Environment.SetEnvironmentVariable("LATEST_RELEASE_NOTES", notes);
+        var notes = System.IO.File.ReadAllText("./artifacts/releasenotes.md") ?? "no release notes.";
+         
+        Information("====release notes:===");
+        Information(notes);
+        Information("=====================");
     });
 
 Task("Package")
