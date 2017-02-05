@@ -1,3 +1,6 @@
+#addin Cake.Coveralls
+
+#tool "nuget:?package=coveralls.io"
 #tool "nuget:?package=GitReleaseNotes"
 #tool "nuget:?package=GitVersion.CommandLine"
 // #tool "nuget:?package=gitlink"
@@ -124,7 +127,12 @@ Task("Test")
             {
                 var token = EnvironmentVariable("COVERALLS_REPO_TOKEN");
 
-                Information("token: " + token);
+                CoverallsIo("coverage.xml", new CoverallsIoSettings()
+                {
+                    FullSources = true,
+                    RepoToken = token
+                });
+
             }
     });
 
