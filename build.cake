@@ -2,6 +2,7 @@
 
 #tool coveralls.net
 #tool coveralls.io
+#tool "nuget:?package=OpenCover"
 #tool "nuget:?package=GitReleaseNotes"
 #tool "nuget:?package=GitVersion.CommandLine"
 // #tool "nuget:?package=gitlink"
@@ -127,6 +128,8 @@ Task("Test")
                 new OpenCoverSettings()
                 {
                     OldStyle = true
+                    Register = "user",
+
                 }
                 .WithFilter("+[*]*")
                 .WithFilter("-[xunit*]*")
