@@ -14,9 +14,9 @@ branches:
   feat?[/-]:   
     tag: alpha-{BranchName}
     mode: ContinuousDeployment
-  (hot)fix(es)?[/-]:
-    tag: rc 
+  hotfix(es)?[/-]:
+    tag: rc
     mode: ContinuousDeployment
   dev(elop)?(ment)?$:   
-    tag: alpha
+    tag: dev
     mode: ContinuousDeployment
