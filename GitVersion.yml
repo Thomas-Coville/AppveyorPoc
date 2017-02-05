@@ -1,0 +1,17 @@
+assembly-informational-format: '{LegacySemVer}'
+major-version-bump-message: '(breaking|major)\(.*\)\s*\:'
+minor-version-bump-message: '(feat|minor)\(.*\)\s*\:'
+patch-version-bump-message: '(fix|patch)\(.*\)\s*\:'
+tag-prefix: 'Release_'
+commit-message-incrementing: Disabled
+branches:
+  master:
+    tag:    
+  releases?[/-]:  
+    tag: rc
+  feat?[/-]:   
+    tag: alpha-{BranchName}  
+  hotfix(es)?[/-]:
+    tag: rc 
+  dev(elop)?(ment)?$:   
+    tag: dev  

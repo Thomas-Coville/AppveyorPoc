@@ -24,9 +24,13 @@ Task("Version")
     .Does(() => {
         GitVersion(new GitVersionSettings{
             UpdateAssemblyInfo = true,
-            OutputType = GitVersionOutput.BuildServer
+            OutputType = GitVersionOutput.BuildServer,
         });
-        versionInfo = GitVersion(new GitVersionSettings{ OutputType = GitVersionOutput.Json });
+
+        versionInfo = GitVersion(new GitVersionSettings{
+            OutputType = GitVersionOutput.Json              
+            LogFilePath = "./artifacts/git-version.log"
+        });
        
         var projects = GetFiles("./**/project.json");
         foreach(var project in projects)
@@ -46,36 +50,24 @@ Task("Build")
         MSBuild("./AppVeyorPoc.sln");
     });
 
-Task("Test")
+Task("Package")
     .IsDependentOn("Build")
     .Does(() => {
-        DotNetCoreTest("./tests/AppVeyorPoc.UnirTests");
-    });
+        GitLink("./", new GitLinkSettings { ArgumentCustomization = args => args.Append("-include Specify,Specify.Autofac") });
 
-Task("Package")
-    .IsDependentOn("Test")
-    .Does(() => {
-        //GitLink("./", new GitLinkSettings { ArgumentCustomization = args => args.Append("-include Specify,Specify.Autofac") });
+        GenerateReleaseNotes();
 
-        // GenerateReleaseNotes();
-
-        // PackageProject("Specify", specifyProjectJson);
-        // PackageProject("Specify.Autofac", specifyAutofacProjectJson);
-
-        // if (AppVeyor.IsRunningOnAppVeyor)
-        // {
-        //     foreach (var file in GetFiles(outputDir + "**/*"))
-        //         AppVeyor.UploadArtifact(file.FullPath);
-        // }
+        PackageProject("AppVeyorPoc.Core", "./src/AppVeyorPoc.Core/project.json");
+        PackageProject("AppVeyorPoc.Library", "./src/AppVeyorPoc.Library/project.json");
     });
 
 private void PackageProject(string projectName, string projectJsonPath)
 {
     var settings = new DotNetCorePackSettings
-        {
-            OutputDirectory = outputDir,
-            NoBuild = true
-        };
+    {
+        OutputDirectory = outputDir,
+        NoBuild = true
+    };
 
     DotNetCorePack(projectJsonPath, settings);
 
