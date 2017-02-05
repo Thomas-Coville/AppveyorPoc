@@ -7,5 +7,9 @@ namespace AppVeyorPoc.Core
 {
     public class Core
     {
+        public string Foo(int a)
+        {
+            return a.ToString();
+        }
     }
 }

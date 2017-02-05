@@ -2,16 +2,28 @@ assembly-informational-format: '{LegacySemVer}'
 major-version-bump-message: '(breaking|major)\(.*\)\s*\:'
 minor-version-bump-message: '(feat|minor)\(.*\)\s*\:'
 patch-version-bump-message: '(fix|patch)\(.*\)\s*\:'
-tag-prefix: 'Release_'
-commit-message-incrementing: Disabled
+tag-prefix: '[vV]'
+legacy-semver-padding: 3
+build-metadata-padding: 3
 branches:
   master:
     tag:    
   releases?[/-]:  
     tag: rc
+    mode: ContinuousDeployment
   feat?[/-]:   
-    tag: alpha-{BranchName}  
+    tag: alpha-{BranchName}
+    mode: ContinuousDeployment
   hotfix(es)?[/-]:
-    tag: rc 
+    tag: rc
+    mode: ContinuousDeployment
   dev(elop)?(ment)?$:   
-    tag: dev  
+    tag: dev
+    mode: ContinuousDeployment
+  (pull|pull\-requests|pr)[/-]:
+    mode: ContinuousDeployment
+    tag: rc
+    increment: Inherit
+    prevent-increment-of-merged-branch-version: false
+    tag-number-pattern: '[/-](?<number>\d+)[-/]'
+    track-merge-target: false

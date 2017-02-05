@@ -1,6 +1,12 @@
+#addin Cake.Coveralls
+
+#tool coveralls.net
+#tool coveralls.io
+#tool "nuget:?package=OpenCover"
 #tool "nuget:?package=GitReleaseNotes"
 #tool "nuget:?package=GitVersion.CommandLine"
-#tool "nuget:?package=gitlink"
+// #tool "nuget:?package=gitlink"
+
 
 Setup((context) =>
 {
@@ -67,9 +73,9 @@ Task("Restore")
 GitVersion versionInfo = null;
 Task("Version")
     .Does(() => {
+    
         GitVersion(new GitVersionSettings{
-            UpdateAssemblyInfo = true,
-            OutputType = GitVersionOutput.BuildServer,
+            OutputType = GitVersionOutput.BuildServer,              
         });
 
         versionInfo = GitVersion(new GitVersionSettings{
@@ -92,19 +98,50 @@ Task("Build")
     .IsDependentOn("Version")
     .IsDependentOn("Restore")
     .Does(() => {
-        MSBuild("./AppVeyorPoc.sln");
+        MSBuild("./AppVeyorPoc.sln",new MSBuildSettings {
+            Verbosity = Verbosity.Minimal,
+            Configuration = "Release",
+            });
     });
 
 Task("Package")
     .IsDependentOn("Build")
     .Does(() => {
-        GitLink("./", new GitLinkSettings { ArgumentCustomization = args => args.Append("-include Specify,Specify.Autofac") });
+        // GitLink("./", new GitLinkSettings { ArgumentCustomization = args => args.Append("-include Specify,Specify.Autofac") });
 
-        GenerateReleaseNotes();
+        // GenerateReleaseNotes();
 
         PackageProject("AppVeyorPoc.Core", "./src/AppVeyorPoc.Core/project.json");
         PackageProject("AppVeyorPoc.Library", "./src/AppVeyorPoc.Library/project.json");
     });
+
+Task("Test")
+    .IsDependentOn("Package")
+    .Does(() => {
+            var settings = new DotNetCoreTestSettings
+            {
+                Configuration = "Release"
+            };
+
+            OpenCover(tool => tool.DotNetCoreTest("./tests/AppVeyorPoc.Tests/project.json",settings),
+                new FilePath("./artifacts/coverage.xml"),
+                new OpenCoverSettings()
+                {
+                    OldStyle = true,
+                    Register = "user"
+                    
+                }
+                .WithFilter("+[*]*")
+                .WithFilter("-[xunit*]*")
+            );         
+			
+			CoverallsIo("./artifacts/coverage.xml", new CoverallsIoSettings()
+            {
+                RepoToken = EnvironmentVariable("COVERALLS_REPO_TOKEN"),
+				FullSources = true
+            });  
+    });
+
 
 private void PackageProject(string projectName, string projectJsonPath)
 {
@@ -128,6 +165,7 @@ private void GenerateReleaseNotes()
         var releaseNotesExitCode = StartProcess(
         @"tools\GitReleaseNotes\tools\gitreleasenotes.exe", 
         new ProcessSettings { Arguments = ". /o artifacts/releasenotes.md" });
+
     if (string.IsNullOrEmpty(System.IO.File.ReadAllText("./artifacts/releasenotes.md")))
         System.IO.File.WriteAllText("./artifacts/releasenotes.md", "No issues closed since last release");
 
@@ -144,6 +182,8 @@ private void PatchVersionProjectJson(string projectJsonPath)
 }
 
 Task("Default")
-    .IsDependentOn("Package");
+    .IsDependentOn("Package")
+    .IsDependentOn("Test")
+    ;
 
 RunTarget(target);

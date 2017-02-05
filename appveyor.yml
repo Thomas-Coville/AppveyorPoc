@@ -1,20 +1,28 @@
-version: 0.0.{build}
+version: 1.0.0-{build}
+
+skip_tags: true           # do not build on tags
+skip_branch_with_pr: true # if the branch has an opened PR then the PR is used for the build trigger
 
 configuration: Release
+
 before_build:
 - ps: >-
     dotnet --info # logs the version of the dotnet client
+
+environment:
+    COVERALLS_REPO_TOKEN:  
+       secure: 8HzckJMRXGlu+1IrbwroBW5Uihpw82AgmrBMsbl33hFVC5R4u4PIFoBRiLqMG/4K
+
 build:
   publish_nuget: true
   publish_nuget_symbols: true
   include_nuget_references: true
   verbosity: minimal
 
+test: off # disable test execution are they are run from the cake script
+
 build_script:
 - ps: .\build.ps1
-
-test_script:
-- cmd: dotnet test .\tests\AppVeyorPoc.UnirTests\
 
 cache:
   - packages -> **\packages.config      # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
@@ -23,5 +31,18 @@ cache:
   - '%APPDATA%\npm-cache'               # npm cache
   - '%USERPROFILE%\.nuget\packages -> **\project.json'  # project.json cache
   - tools -> .\build.cake                              # local tools folder
+
 artifacts:
 - path: .\artifacts\*
+
+deploy:
+  release: v$(GitVersion_MajorMinorPatch)
+  description: 'Release description'
+  provider: GitHub
+  auth_token:
+    secure: 3kZytiMqUPTXYbjoLn+RGzzIGhsf/PiEM2nUNomMPvtiTcvpFVZL4/dFSqh2ADSz  # your encrypted token from GitHub
+  artifact: /.*\.nupkg/            # upload all NuGet packages to release assets
+  draft: false
+  prerelease: false
+  on:
+    branch: master                 # release from master branch only
