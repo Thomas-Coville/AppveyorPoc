@@ -1,6 +1,7 @@
 version: 1.0.0-{build}
 
-skip_tags: true # do not build on tags
+skip_tags: true           # do not build on tags
+skip_branch_with_pr: true # if the branch has an opened PR then the PR is used for the build trigger
 
 configuration: Release
 
