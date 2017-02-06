@@ -4,3 +4,5 @@
 [![Coverage Status](https://coveralls.io/repos/github/Thomas-Coville/AppveyorPoc/badge.svg?branch=master)](https://coveralls.io/github/Thomas-Coville/AppveyorPoc?branch=master)
 
 POC project for AppVeyor
+
+test
